@@ -1,0 +1,11 @@
+# Python cache
+__pycache__/
+*.pyc
+
+*.json
+
+# Logs / temp
+*.log
+*.tmp
+
+*.vscode
