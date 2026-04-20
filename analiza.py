@@ -15,7 +15,7 @@ def pripravi_podatke(datoteka):
     '''Pripravi podatke iz JSON datoteke in jih prefiltrira.'''
     with open(datoteka, 'r', encoding='utf-8') as f:
         data = json.load(f)
-
+    
     filtrirani = [
         v for v in data
         if v.get("cena") and v.get("km") and v["cena"] >= 200 and v["km"] >= 20000
@@ -26,7 +26,7 @@ def pripravi_podatke(datoteka):
 def najugodnejse(avti):
     '''Poišče avtomobil z najboljšim razmerjem cena/km.'''
     best = min(avti, key=lambda v: v['cena'] / v['km'])
-
+    
     return {
         'naziv': best.get('naziv'),
         'indeks': best['cena'] / best['km'],
@@ -36,7 +36,7 @@ def najugodnejse(avti):
 def analiza_znamk(avti):
     '''Analizira znamke avtomobilov in poišče najugodnejšo in najmanj ugodno znamko.'''
     indeksi = {}
-
+    # Gremo čez vse avtomobile in izračunamo indeks cena/km za vsako znamko
     for v in avti:
         znamka = v['znamka']
         indeks = v['cena'] / v['km']
@@ -45,9 +45,11 @@ def analiza_znamk(avti):
             indeksi[znamka].append(indeks)
         else:
             indeksi[znamka] = [indeks]
-
+            
+    # Izračunamo povprečni indeks za vsako znamko
     povprecja = {z: sum(vr) / len(vr) for z, vr in indeksi.items()}
 
+    # Poiščemo znamko z najmanjšim in največjim povprečnim indeksom
     najugodnejsa = min(povprecja, key=povprecja.get)
     najslabsa = max(povprecja, key=povprecja.get)
 
