@@ -91,7 +91,7 @@ def moc_cena(data):
 def km_cena(data):
     '''Analizira razmerje med kilometri in ceno.'''
     kilometri = []
-    cene_evri = []
+    cene = []
     
     for avto in data:
         km = avto.get('km')
@@ -99,14 +99,14 @@ def km_cena(data):
         
         if km is not None and cena is not None:
             kilometri.append(km)
-            cene_evri.append(cena)
+            cene.append(cena)
             
-    return kilometri, cene_evri
+    return kilometri, cene
 
 def letnik_ceno(data):
     '''Analizira razmerje med letnikom in ceno.'''
     letniki = []
-    cene_evri = []
+    cene = []
     
     for avto in data:
         letnik = avto.get('letnik')
@@ -114,8 +114,8 @@ def letnik_ceno(data):
         
         if letnik is not None and cena is not None:
             letniki.append(letnik)
-            cene_evri.append(cena)
+            cene.append(cena)
             
-    return letniki, cene_evri
+    return letniki, cene
 
 
