@@ -85,10 +85,33 @@ def xy(podatki, kljuc_x, kljuc_y):
 
         # Preverimo da sta oba podatka številki in večja od 0
         if vr_x is not None and vr_y is not None:
-            
             x.append(vr_x)
             y.append(vr_y)
 
     return x, y
 
+# =========VISUALIZACIJA========
 
+def narisi_znamke(axs, povprecja):
+    '''Nariše stolpčni graf povprečnih indeksov cena/km za znamke.'''
+    razvrscene = sorted(povprecja.items(), key=lambda x: x[1], reverse=True)
+    
+    imena = [z[0] for z in razvrscene]
+    vrednosti = [z[1] for z in razvrscene]
+
+    axs.bar(imena, vrednosti, edgecolor = 'black')
+    axs.set_title('Znamke: cena/km', fontsize = 15)
+    axs.set_xlabel('Znamka')
+    axs.set_ylabel('EUR/km')
+    axs.tick_params(axis = 'x', rotation = 90)
+    
+
+
+
+
+
+    
+   
+
+
+    
