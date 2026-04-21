@@ -74,7 +74,7 @@ def link_znamke(znamka):
 
 
 
-def izlusci_xy(podatki, kljuc_x, kljuc_y):
+def xy(podatki, kljuc_x, kljuc_y):
     '''Izlušči pare (x, y) iz podatkov glede na podana ključa.'''
     x = []
     y = []
@@ -84,9 +84,11 @@ def izlusci_xy(podatki, kljuc_x, kljuc_y):
         vr_y = v.get(kljuc_y)
 
         # Preverimo da sta oba podatka številki in večja od 0
-        if isinstance(vr_x, (int, float)) and isinstance(vr_y, (int, float)):
-            if vr_x > 0 and vr_y > 0:
-                x.append(vr_x)
-                y.append(vr_y)
+        if vr_x is not None and vr_y is not None:
+            
+            x.append(vr_x)
+            y.append(vr_y)
 
     return x, y
+
+
