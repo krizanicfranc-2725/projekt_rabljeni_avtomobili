@@ -74,50 +74,19 @@ def link_znamke(znamka):
 
 
 
-def moc_cena(data):
-    '''Analizira razmerje med močjo (kW) in ceno.'''
-    moci_kw = []
-    cene_evri = []
+def izlusci_xy(podatki, kljuc_x, kljuc_y):
+    '''Izlušči pare (x, y) iz podatkov glede na podana ključa.'''
+    x = []
+    y = []
     
-    for avto in data:
-        kw = avto.get('kw')
-        cena = avto.get('cena')
-        
-        if kw is not None and cena is not None:
-            moci_kw.append(kw)
-            cene_evri.append(cena)
-            
-    return moci_kw, cene_evri
+    for v in podatki:
+        vr_x = v.get(kljuc_x)
+        vr_y = v.get(kljuc_y)
 
+        # Preverimo da sta oba podatka številki in večja od 0
+        if isinstance(vr_x, (int, float)) and isinstance(vr_y, (int, float)):
+            if vr_x > 0 and vr_y > 0:
+                x.append(vr_x)
+                y.append(vr_y)
 
-def km_cena(data):
-    '''Analizira razmerje med kilometri in ceno.'''
-    kilometri = []
-    cene = []
-    
-    for avto in data:
-        km = avto.get('km')
-        cena = avto.get('cena')
-        
-        if km is not None and cena is not None:
-            kilometri.append(km)
-            cene.append(cena)
-            
-    return kilometri, cene
-
-def letnik_ceno(data):
-    '''Analizira razmerje med letnikom in ceno.'''
-    letniki = []
-    cene = []
-    
-    for avto in data:
-        letnik = avto.get('letnik')
-        cena = avto.get('cena')
-        
-        if letnik is not None and cena is not None:
-            letniki.append(letnik)
-            cene.append(cena)
-            
-    return letniki, cene
-
-
+    return x, y
