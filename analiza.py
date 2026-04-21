@@ -104,14 +104,22 @@ def narisi_znamke(axs, povprecja):
     axs.set_xlabel('Znamka')
     axs.set_ylabel('EUR/km')
     axs.tick_params(axis = 'x', rotation = 90)
+
+def narisi_pie_goriva(axs, goriva):
+    '''Nariše modern in pregleden tortni diagram na podano platno (ax).'''
     
-
-
-
-
-
+    vrednosti = list(goriva.values())
+    oznake = list(goriva.keys())
     
-   
-
-
+    barve = ['green', 'blue', 'red', 'orange', 'grey', 'purple', 'cyan', 'magenta'][:len(oznake)]  
     
+    axs.pie(
+        vrednosti,
+        labels = oznake,
+        colors = barve,               
+        autopct = '%1.1f%%',               
+    )
+    
+    axs.set_title('Razmerje goriv na trgu', fontsize = 15)
+    axs.axis('equal')
+
