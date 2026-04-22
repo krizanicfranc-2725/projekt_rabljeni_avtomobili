@@ -1,6 +1,7 @@
 import json
 import matplotlib.pyplot as plt
 from collections import Counter
+from datetime import datetime
 
 id_znamk = {
         'Audi': '3', 'Bentley': '103', 'BMW': '4', 'Citroën': '6', 'Citroen': '6', 
@@ -123,3 +124,25 @@ def narisi_pie_goriva(axs, goriva):
     axs.set_title('Razmerje goriv na trgu', fontsize = 15)
     axs.axis('equal')
 
+
+
+datum = datetime.now().strftime("%d-%m-%Y")
+datoteka = f"span_avti_{datum}.json"
+podatki = pripravi_podatke(datoteka)
+povprecja, najugodnejsa, najslabsa = analiza_znamk(podatki)
+znamke, goriva, naj_ponudba, naj_prodani = statistika(podatki)
+
+
+fig, axs = plt.subplots(1, 2, figsize=(14, 6))
+
+# Stolpčni diagram
+narisi_znamke(axs[0], povprecja)
+
+# Tortni diagram
+narisi_pie_goriva(axs[1], goriva)
+
+# Skupni naslov
+fig.suptitle('Analiza trga vozil', fontsize=16, fontweight='bold')
+
+plt.tight_layout()
+plt.show()
