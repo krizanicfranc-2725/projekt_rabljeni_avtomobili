@@ -127,6 +127,9 @@ def izlusci_znamko(vsi_avti, ime_znamke):
     ]
 
 
+
+# =========VISUALIZACIJA========
+
 def indikatorji(avti_znamke):
     '''Izračuna ključne indikatorje.'''
     
@@ -149,9 +152,6 @@ def indikatorji(avti_znamke):
         'povp_km': round(povp_km),
         'povp_letnik': round(povp_letnik)
     }
-
-# =========VISUALIZACIJA========
-
 
 
 # ___najugodnejši avtomobil___
