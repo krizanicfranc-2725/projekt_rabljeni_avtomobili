@@ -165,7 +165,6 @@ def slika_prodanih_znamk(datoteka):
     plt.xticks(rotation=90)
 
     plt.tight_layout()
-    fig.savefig('prodaja_graf.pdf')
     plt.show()
     plt.close()
 
@@ -193,7 +192,6 @@ def slika_goriv(datoteka, znamka=None):
     plt.title(naslov)
     
     plt.tight_layout()
-    fig.savefig('goriva_graf.pdf')
     plt.show()
     plt.close()
 
@@ -237,7 +235,6 @@ def slika_analiza_modela(datoteka, ime_znamke):
     plt.ylabel('Cena')
 
     plt.tight_layout()
-    fig.savefig('cena_km_graf.pdf')
     plt.show()
     plt.close()
 
