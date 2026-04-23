@@ -16,11 +16,6 @@ def pripravi_podatke(datoteka):
     '''Pripravi podatke iz JSON datoteke in jih prefiltrira.'''
     with open(datoteka, 'r', encoding='utf-8') as f:
         data = json.load(f)
-    
-    #filtrirani = [
-    #    v for v in data
-    #    if v.get("cena") and v.get("km")
-    #]
 
     return data
 
@@ -130,172 +125,92 @@ def izlusci_znamko(vsi_avti, ime_znamke):
 
 # =========VISUALIZACIJA========
 
-def indikatorji(avti_znamke):
-    '''Izračuna ključne indikatorje.'''
-    
-    neprodani = [
-        v for v in avti_znamke 
-        if not v.get('prodano') and v.get('cena') and v.get('km') and v.get('letnik')
-    ]
-    
-    if not neprodani:
-        return 'Za to znamko ni zaloge'
-
-    stevilo = len(neprodani)
-    povp_cena = sum(v['cena'] for v in neprodani) / stevilo
-    povp_km = sum(v['km'] for v in neprodani) / stevilo
-    povp_letnik = sum(v['letnik'] for v in neprodani) / stevilo
-
-    return {
-        'stevilo': stevilo,
-        'povp_cena': round(povp_cena),
-        'povp_km': round(povp_km),
-        'povp_letnik': round(povp_letnik)
-    }
-
-
-# ___najugodnejši avtomobil___
-def najugodnejse(avti, znamka = None):
-    '''Poišče neprodan avtomobil z najboljšim razmerjem cena/km.'''
-
-    neprodani_avti = [
-        v for v in avti
-        if not v.get('prodano') and v.get('cena') and v.get('km')
-    ]
-
-    if znamka:
-        neprodani = izlusci_znamko(neprodani_avti, znamka)
-    else:
-        neprodani = neprodani_avti
-
-    if not neprodani:
-        return None
-    
-    best = min(neprodani, key = lambda v: v['cena'] / v['km'])
-
-    return {
-        'naziv': best.get('naziv'),
-        'cena': best.get('cena'),
-        'letnik': best.get('letnik'),
-        'km': best.get('km'),
-        'prostornina': best.get('prostornina'),
-        'kw': best.get('kw'),
-        'link': best.get('link'),
-    }
-    
-
-# ___zaloga znamk___
-
-def graf_zaloga_znamk(axs, zaloga_po_znamkah):
-    '''Nariše stolpčni diagram števila vozil posamezne znamke na zalogi.'''
-    if not zaloga_po_znamkah:
-        axs.set_title('Ni podatkov o zalogi')
-        axs.axis('off')
-        return
-    
-    razvrsceno = sorted(zaloga_po_znamkah.items(), key = lambda x: x[1], reverse=True)
-    imena = [x[0] for x in razvrsceno]
-    kolicine = [x[1] for x in razvrsceno]
-    axs.bar(imena, kolicine, color='blue', edgecolor='black')
-
-    axs.set_title('Število vozil na zalogi', fontsize=14, fontweight='bold')
-    axs.set_ylabel('Število vozil')
-    axs.tick_params(axis='x', rotation=90) # Obrnemo imena znamk, da se ne prekrivajo
-    axs.grid(axis='y', linestyle='--', alpha=0.7)
-
-
 def slika_zaloge_znamk(datoteka):
-    '''Ustvari sliko zalogo avtomobilov po znamkah.'''
+    '''Ustvari in shrani poenostavljen graf zaloge.'''
     podatki = pripravi_podatke(datoteka)
-    zaloga_po_znamkah, _, _ = statistika(podatki)
+    zaloga, _, _ = statistika(podatki)
 
-    fig, ax = plt.subplots(figsize=[8, 6])
-
-    graf_zaloga_znamk(ax, zaloga_po_znamkah)
-
-    plt.tight_layout()
-    plt.show()
-
-
-# ___prodaja znamk___
-def graf_prodane_znamke(ax, prodani_po_znamkah):
-    '''Nariše stolpčni diagram števila prodanih vozil posamezne znamke.'''
-    if not prodani_po_znamkah:
-        ax.set_title('Ni podatkov o prodanih vozilih')
-        ax.axis('off')
+    if not zaloga:
         return
 
-    # Sortiramo od največ prodanih do najmanj
-    razvrsceno = sorted(prodani_po_znamkah.items(), key=lambda x: x[1], reverse=True)
+    razvrsceno = sorted(zaloga.items(), key=lambda x: x[1], reverse=True)
     imena = [x[0] for x in razvrsceno]
     kolicine = [x[1] for x in razvrsceno]
 
-    ax.bar(imena, kolicine, color='green', edgecolor='black')
+    fig = plt.figure(figsize=[6.4, 4.8])
+    plt.bar(imena, kolicine, color='blue')
+    plt.title('Število vozil na zalogi')
+    plt.xticks(rotation=90)
 
-    ax.set_title('Število prodanih vozil po znamkah', fontsize=14, fontweight='bold')
-    ax.set_ylabel('Število prodanih')
-    ax.tick_params(axis='x', rotation=90)
-    ax.grid(axis='y', linestyle='--', alpha=0.7)
+    plt.tight_layout() 
+    fig.savefig('zaloga_graf.pdf')
+    plt.show()
+    plt.close()
+
 
 def slika_prodanih_znamk(datoteka):
-    '''Upravitelj, ki samostojno prebere podatke, odpre okno in nariše graf prodanih vozil.'''
-
+    '''Ustvari in shrani poenostavljen graf prodaje.'''
     podatki = pripravi_podatke(datoteka)
-    _, prodani_po_znamkah, _ = statistika(podatki)
+    _, prodani, _ = statistika(podatki)
 
-    fig, ax = plt.subplots(figsize=[8, 6])
-
-    graf_prodane_znamke(ax, prodani_po_znamkah)
-
-   
-    plt.tight_layout()
-    plt.show()
-
-# __GORIVA___
-def graf_goriva(ax, goriva):
-    '''Nariše tortni diagram razmerja goriv.'''
-    if not goriva:
-        ax.set_title('Ni podatkov o gorivih')
-        ax.axis('off')
+    if not prodani:
         return
 
-    oznake = list(goriva.keys())
-    vrednosti = list(goriva.values())
+    razvrsceno = sorted(prodani.items(), key=lambda x: x[1], reverse=True)
+    imena = [x[0] for x in razvrsceno]
+    kolicine = [x[1] for x in razvrsceno]
 
-    barve = ['green', 'blue', 'orange', 'red', 'purple', 'brown', 'pink', 'gray', 'cyan', 'magenta'][:len(oznake)]
+    fig = plt.figure(figsize=[6.4, 4.8])
+    plt.bar(imena, kolicine, color='green')
+    plt.title('Število prodanih vozil po znamkah')
+    plt.xticks(rotation=90)
 
-    ax.pie(
-        vrednosti, 
-        labels=oznake, 
-        autopct='%1.1f%%', 
-        startangle=140, 
-        colors=barve[:len(oznake)],
-        wedgeprops={'edgecolor': 'white', 'linewidth': 2}
-    )
+    plt.tight_layout()
+    fig.savefig('prodaja_graf.pdf')
+    plt.show()
+    plt.close()
 
-    ax.set_title('Razmerje goriv na trgu', fontsize=14, fontweight='bold')
-    ax.axis('equal')  
 
-def slika_goriv(datoteka, znamka = None):
-    '''nariše tortni diagram goriv.'''
+def slika_goriv(datoteka, znamka=None):
+    '''Nariše osnovni tortni diagram goriv in ga shrani.'''
     vsi_avti = pripravi_podatke(datoteka)
         
     if znamka:
         avti = izlusci_znamko(vsi_avti, znamka)
+        naslov = f'Razmerje goriv: {znamka.capitalize()}'
     else:
         avti = vsi_avti
+        naslov = 'Razmerje goriv na celotnem trgu'
     
     _, _, goriva = statistika(avti)
+    if not goriva:
+        return
     
-    fig, ax = plt.subplots(figsize=[8, 6])
-    graf_goriva(ax, goriva)
+    oznake = list(goriva.keys())
+    vrednosti = list(goriva.values())
+
+    fig = plt.figure(figsize=[6.4, 4.8])
+    plt.pie(vrednosti, labels=oznake, autopct='%1.1f%%')
+    plt.title(naslov)
+    
     plt.tight_layout()
+    fig.savefig('goriva_graf.pdf')
     plt.show()
+    plt.close()
 
 
-# ___ANALIZA MODELA (Cena vs KM)___
+def slika_analiza_modela(datoteka, ime_znamke):
+    '''Nariše graf razpršenosti cene in km (z letniki).'''
+    vsi_avti = pripravi_podatke(datoteka)
+    vozila = najpogostejsi_model_in_avti(vsi_avti, ime_znamke)
+    
+    if not vozila:
+        print(f"Za znamko {ime_znamke} nismo našli podatkov.")
+        return
 
-def graf_cena_km(ax, vozila, naslov_modela):
+    naziv = vozila[0].get('naziv', '')
+    ime_modela = naziv.split()[1] if len(naziv.split()) > 1 else "Model"
+
     podatki = [
         (v['km'], v['cena'], v['letnik'])
         for v in vozila
@@ -306,57 +221,26 @@ def graf_cena_km(ax, vozila, naslov_modela):
     ]
 
     if not podatki:
-        ax.set_title(f'Ni podatkov za {naslov_modela}')
-        ax.axis('off')
         return
 
+    # Razpakiramo vse tri komponente
     km, cene, letniki = zip(*podatki)
 
-    scatter = ax.scatter(km, cene, c = letniki, cmap = 'viridis')
-
-    plt.colorbar(scatter, ax = ax)
-
-    ax.set_title(naslov_modela)
-    ax.set_xlabel('km')
-    ax.set_ylabel('cena')
-
-    ax.grid(True)
-
-
-def slika_analiza_modela(datoteka, ime_znamke):
-    '''nariše graf cene glede na kilometre za najpogostejši model določene znamke.'''
+    fig = plt.figure(figsize=[6.4, 4.8])
     
-    vsi_avti = pripravi_podatke(datoteka)
-    vozila_modela = najpogostejsi_model_in_avti(vsi_avti, ime_znamke)
-    
-    if not vozila_modela:
-        print(f"Za znamko {ime_znamke} nismo našli podatkov.")
-        return
-    
-    prvi_avto = vozila_modela[0]
-    naziv = prvi_avto.get('naziv', '')
-    
-    ime_modela = naziv.split()[1] if len(naziv.split()) > 1 else "Model"
+    # Dodane barve glede na letnik
+    scatter = plt.scatter(km, cene, c=letniki, cmap='viridis')
+    cbar = plt.colorbar(scatter)
+    cbar.set_label('Letnik vozila')
 
-    
-    fig, ax = plt.subplots(figsize=[10, 7])
-
-    graf_cena_km(ax, vozila_modela, f"{ime_znamke} {ime_modela}")
-
-    # 4. Prikaz
-    plt.tight_layout()
-    plt.show()
-    
-    prvi_avto = vozila_modela[0]
-    naziv = prvi_avto.get('naziv', '')
-    ime_modela = naziv.split()[1] if len(naziv.split()) > 1 else "Model"
-
-    fig, ax = plt.subplots(figsize=[10, 7])
-
-    graf_cena_km(ax, vozila_modela, f"{ime_znamke} {ime_modela}")
+    plt.title(f'Cena vs KM: {ime_znamke} {ime_modela}')
+    plt.xlabel('Prevoženi kilometri')
+    plt.ylabel('Cena')
 
     plt.tight_layout()
+    fig.savefig('cena_km_graf.pdf')
     plt.show()
+    plt.close()
 
 
 if __name__ == '__main__':
