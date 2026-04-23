@@ -15,8 +15,9 @@ def najdi_avto(html):
     m = re.match(r"([A-Za-zČŠŽčšž\-]+)", naziv) if naziv else None
     znamka = m.group(1) if m else None
 
-    # Gorivo  <h4><a href="/sl/Rabljena-vozila/Mercedes-Benz-CLA Shooting Brake-Vozilo201627/">dizelski
-    m = re.search(r"<h4>.*?<a[^>]*>([^,]*)", html)
+    # Gorivo  <h4><a href="/sl/Rabljena-vozila/Mercedes-Benz-CLA Shooting Brake-Vozilo201627/">dizelski, 1950 ccm, 110kW / 150 KM</a></h4>
+    #         <h4><a href="/sl/Rabljena-vozila/Cupra-Born-Vozilo201939/">električni</a></h4>
+    m = re.search(r"<h4>.*?<a[^>]*>([^,]*).*</a></h4>", html)
     gorivo = m.group(1).strip() if m else None
 
     # Prostornina  Vozilo201627/">dizelski, 1950 ccm, 110kW / 150 KM
