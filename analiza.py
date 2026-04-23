@@ -137,13 +137,12 @@ def slika_zaloge_znamk(datoteka):
     imena = [x[0] for x in razvrsceno]
     kolicine = [x[1] for x in razvrsceno]
 
-    fig = plt.figure(figsize=[6.4, 4.8])
+    fig = plt.figure(figsize=[8, 6])
     plt.bar(imena, kolicine, color='blue')
     plt.title('Število vozil na zalogi')
     plt.xticks(rotation=90)
 
     plt.tight_layout() 
-    fig.savefig('zaloga_graf.pdf')
     plt.show()
     plt.close()
 
