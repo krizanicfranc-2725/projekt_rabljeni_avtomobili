@@ -1,0 +1,14 @@
+splošna analiza:
+
+indikatorji(avti_znamke):  vrne število vozil te znamke, povprečno ceno, povprečno število km, poprečen letnik.
+
+najugodnejse(avti, znamka = None):   vrne naziv, letnik, ceno, km, prostornino, moč (KW), link (na splošno ali za izbrano znamko)
+
+slika_zaloge_znamk(datoteka):   vrne sliko z stolpčnim diagramom zalog vozil po znamkah
+
+slika_prodanih_znamk(datoteka):   vrne sliko z stolpčnim diagramom prodanih vozil po znamkah
+
+slika_goriv(datoteka, znamka = None):   vrne sliko z tortnim diagramom vrst goriv (na splošno ali za izbrano znamko)
+
+slika_analiza_modela(datoteka, ime_znamke):  vrne sliko z grafom cene glede na kilometre za najpogostejši model določene znamke.
+

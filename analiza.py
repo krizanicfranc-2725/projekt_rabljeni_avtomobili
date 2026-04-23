@@ -277,7 +277,7 @@ def graf_goriva(ax, goriva):
     ax.axis('equal')  
 
 def slika_goriv(datoteka, znamka = None):
-    '''Upravitelj, ki samostojno prebere podatke in nariše tortni diagram goriv.'''
+    '''nariše tortni diagram goriv.'''
     vsi_avti = pripravi_podatke(datoteka)
         
     if znamka:
@@ -324,7 +324,7 @@ def graf_cena_km(ax, vozila, naslov_modela):
 
 
 def slika_analiza_modela(datoteka, ime_znamke):
-    '''Upravitelj, ki poišče najpogostejši model znamke in nariše njegovo analizo.'''
+    '''nariše graf cene glede na kilometre za najpogostejši model določene znamke.'''
     
     vsi_avti = pripravi_podatke(datoteka)
     vozila_modela = najpogostejsi_model_in_avti(vsi_avti, ime_znamke)
