@@ -26,8 +26,14 @@ def analiza_znamk(avti):
     indeksi = {}
     # Gremo čez vse avtomobile in izračunamo indeks cena/km za vsako znamko
     for v in avti:
-        znamka = v['znamka']
-        indeks = v['cena'] / v['km']
+        cena = v.get('cena') or 0
+        km = v.get('km') or 0
+        znamka = v.get('znamka')
+
+        if not znamka or km <= 100 or cena <= 0:
+            continue
+
+        indeks = cena / km
         
         if znamka in indeksi:
             indeksi[znamka].append(indeks)
@@ -37,11 +43,7 @@ def analiza_znamk(avti):
     # Izračunamo povprečni indeks za vsako znamko
     povprecja = {z: sum(vr) / len(vr) for z, vr in indeksi.items()}
 
-    # Poiščemo znamko z najmanjšim in največjim povprečnim indeksom
-    najugodnejsa = min(povprecja, key=povprecja.get)
-    najslabsa = max(povprecja, key=povprecja.get)
-
-    return povprecja, najugodnejsa, najslabsa
+    return povprecja
 
 def statistika(avti):
     '''Analizira prodajo, zalogo in goriva.'''
@@ -226,13 +228,37 @@ def slika_analiza_modela(datoteka, ime_znamke):
     fig = plt.figure(figsize=[6.4, 4.8])
     
     # Dodane barve glede na letnik
-    scatter = plt.scatter(km, cene, c=letniki, cmap='viridis')
+    scatter = plt.scatter(km, cene, c = letniki, cmap='viridis')
     cbar = plt.colorbar(scatter)
     cbar.set_label('Letnik vozila')
 
     plt.title(f'Cena vs KM: {ime_znamke} {ime_modela}')
     plt.xlabel('Prevoženi kilometri')
     plt.ylabel('Cena')
+
+    plt.tight_layout()
+    plt.show()
+    plt.close()
+
+def slika_ugodnost_znamk(datoteka):
+    '''Nariše stolpčni diagram ugodnosti znamk (indeks cena/km) od najdražje do najcenejše.'''
+    vsi_avti = pripravi_podatke(datoteka)
+    
+    povprecja = analiza_znamk(vsi_avti)
+    
+    if not povprecja:
+        return None
+
+    razvrsceno = sorted(povprecja.items(), key=lambda x: x[1], reverse=True)
+    imena = [x[0] for x in razvrsceno]
+    vrednosti = [x[1] for x in razvrsceno]
+
+    fig = plt.figure(figsize=[8, 6])
+    plt.bar(imena, vrednosti, color='purple')
+    
+    plt.title('Povprečna cena na kilometer po znamkah')
+    plt.ylabel('Indeks (€ / km)')
+    plt.xticks(rotation=90)
 
     plt.tight_layout()
     plt.show()
@@ -258,3 +284,9 @@ if __name__ == '__main__':
     
     
     slika_analiza_modela(ime_datoteke, 'volkswagen')
+
+    povprecja = analiza_znamk(vsi_avti)
+    for znamka, povprecje in povprecja.items():
+        print(f"{znamka}: {povprecje:.2f} €/km")
+
+    slika_ugodnost_znamk(ime_datoteke)
