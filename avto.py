@@ -20,10 +20,3 @@ class Avto:
 
     def to_dict(self):
         return self.__dict__
-    
-    def eur_per_km(self):
-        #vrne ceno na km, če imamo tako ceno kot kilometre, sicer None
-        if self.cena is None or self.km is None or self.km == 0:
-            return None
-        return self.cena / self.km
-
