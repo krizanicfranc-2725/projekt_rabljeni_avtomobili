@@ -65,13 +65,14 @@ def najpogostejsi_model_in_avti(avti, ime_znamke):
 
     modeli = []
     pari = []
-
+    
     ime_znamke_lower = ime_znamke.lower()
 
+    # Gremo čez vse avtomobile in iščemo tiste, ki ustrezajo izbrani znamki
     for avto in avti:
+        # Preverimo znamko in naziv avtomobila. če ni znamke ali naziva, vzamemo prazno vrednost.
         znamka = avto.get('znamka', '').lower()
         naziv = avto.get('naziv', '')
-        # Preverimo, ali se znamka ujema in ali naziv obstaja
         if znamka != ime_znamke_lower or not naziv:
             continue
 
@@ -117,7 +118,7 @@ def slika_zaloge_znamk(datoteka):
     if not zaloga:
         return
 
-    razvrsceno = sorted(zaloga.items(), key=lambda x: x[1], reverse=True)
+    razvrsceno = sorted(zaloga.items(), key = lambda x: x[1], reverse=True)
     imena = [x[0] for x in razvrsceno]
     kolicine = [x[1] for x in razvrsceno]
 
@@ -139,11 +140,11 @@ def slika_prodanih_znamk(datoteka):
     if not prodani:
         return
 
-    razvrsceno = sorted(prodani.items(), key=lambda x: x[1], reverse=True)
+    razvrsceno = sorted(prodani.items(), key = lambda x: x[1], reverse=True)
     imena = [x[0] for x in razvrsceno]
     kolicine = [x[1] for x in razvrsceno]
 
-    fig = plt.figure(figsize=[6.4, 4.8])
+    fig = plt.figure(figsize=[8, 6])
     plt.bar(imena, kolicine, color='green')
     plt.title('Število prodanih vozil po znamkah')
     plt.xticks(rotation=90)
@@ -166,12 +167,12 @@ def slika_goriv(datoteka, znamka=None):
     
     _, _, goriva = statistika(avti)
     if not goriva:
-        return
+        return 'Ni podatkov o gorivih.'
     
     oznake = list(goriva.keys())
     vrednosti = list(goriva.values())
 
-    fig = plt.figure(figsize=[6.4, 4.8])
+    fig = plt.figure(figsize=[8, 6])
     plt.pie(vrednosti, labels=oznake, autopct='%1.1f%%')
     plt.title(naslov)
     
@@ -186,8 +187,7 @@ def slika_analiza_modela(datoteka, ime_znamke):
     vozila = najpogostejsi_model_in_avti(vsi_avti, ime_znamke)
     
     if not vozila:
-        print(f"Za znamko {ime_znamke} nismo našli podatkov.")
-        return
+        return f'Za znamko {ime_znamke} nismo našli podatkov.'
 
     naziv = vozila[0].get('naziv', '')
     ime_modela = naziv.split()[1] if len(naziv.split()) > 1 else "Model"
@@ -202,7 +202,7 @@ def slika_analiza_modela(datoteka, ime_znamke):
     ]
 
     if not podatki:
-        return
+        return f'Za model {ime_modela} znamke {ime_znamke} nismo našli dovolj podatkov za analizo.'
 
     # Razpakiramo vse tri komponente
     km, cene, letniki = zip(*podatki)
@@ -214,7 +214,7 @@ def slika_analiza_modela(datoteka, ime_znamke):
     cbar = plt.colorbar(scatter)
     cbar.set_label('Letnik vozila')
 
-    plt.title(f'Cena vs KM: {ime_znamke} {ime_modela}')
+    plt.title(f'Cena / km: {ime_znamke} {ime_modela}')
     plt.xlabel('Prevoženi kilometri')
     plt.ylabel('Cena')
 
@@ -229,7 +229,7 @@ def slika_ugodnost_znamk(datoteka):
     povprecja = analiza_znamk(vsi_avti)
     
     if not povprecja:
-        return None
+        return 'Ni podatkov za analizo ugodnosti znamk.'
 
     razvrsceno = sorted(povprecja.items(), key=lambda x: x[1], reverse=True)
     imena = [x[0] for x in razvrsceno]
@@ -262,7 +262,7 @@ if __name__ == '__main__':
     slika_prodanih_znamk(ime_datoteke)
     
 
-    slika_goriv(ime_datoteke, znamka = 'volkswagen')
+    slika_goriv(ime_datoteke, znamka = 'land rover')
 
     vsi_avti = pripravi_podatke(ime_datoteke)
     
@@ -274,3 +274,5 @@ if __name__ == '__main__':
         print(f"{znamka}: {povprecje:.2f} €/km")
 
     slika_ugodnost_znamk(ime_datoteke)
+    
+    slika_goriv(ime_datoteke)
