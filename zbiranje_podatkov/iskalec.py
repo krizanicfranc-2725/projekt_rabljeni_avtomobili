@@ -1,5 +1,5 @@
 import re
-from avto import Avto
+from .avto import Avto
 
 def najdi_avto(html):
 

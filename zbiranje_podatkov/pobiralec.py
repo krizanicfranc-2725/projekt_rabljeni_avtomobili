@@ -3,7 +3,8 @@ import time
 import json
 import requests
 from datetime import datetime
-from iskalec import najdi_avto
+from zbiranje_podatkov.iskalec import najdi_avto
+
 
 headers = {"User-Agent": "Chrome/145.0.7632.160"}
 
@@ -34,7 +35,7 @@ def poberi_vse_strani():
         html = prenesi_stran(stran)
         bloki = split_na_avte(html)
 
-        print(f"Stran {stran}/{max_stran}: našel {len(bloki)} blokov v {time.time() - start_page:.3f} s")
+        print(f"Stran {stran}/{max_stran}: v {time.time() - start_page:.3f} s")
 
         for blok in bloki:
             avto = najdi_avto(blok)
@@ -43,6 +44,8 @@ def poberi_vse_strani():
                 # izloči najemne avte
                 if avto.cena is not None and avto.cena < 1000:
                     continue
+                if avto.znamka == "citro":
+                    avto.znamka = "citroen"
 
                 vsi_avti.append(avto)
 
@@ -51,17 +54,8 @@ def poberi_vse_strani():
     print(f"Skupno najdenih avtov: {len(vsi_avti)}")
 
     return vsi_avti
-
-def shrani_json(avti):
-    # Shranimo v JSON datoteko
-    datum = datetime.now().strftime("%d-%m-%Y")
-    ime = f"span_avti_{datum}.json"
-
-    with open(ime, "w", encoding="utf-8") as f:
+def shrani_json(avti, pot):
+    with open(pot, "w", encoding="utf-8") as f:
         json.dump([a.to_dict() for a in avti], f, ensure_ascii=False, indent=4)
 
-    print(f"Podatki shranjeni v {ime}")
-
-if __name__ == "__main__":
-    avti = poberi_vse_strani()
-    shrani_json(avti)
+    print(f"Podatki shranjeni v {pot}")

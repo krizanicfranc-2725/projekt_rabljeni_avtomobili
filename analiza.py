@@ -250,7 +250,7 @@ def slika_ugodnost_znamk(datoteka):
 if __name__ == '__main__':
 
 
-    ime_datoteke = "span_avti_23-04-2026.json"
+    ime_datoteke = "span_avti_22-04-2026.json"
     
     
     

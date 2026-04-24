@@ -4,7 +4,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_percentage_error
 import matplotlib.pyplot as plt
 
-id_goriv = {"bencin": 0, "dizel": 1, "elektrika": 2, "hibrid": 3}
 
 #Branje in filtriranje
 def preberi_podatke(pot):
@@ -123,5 +122,5 @@ if __name__ == "__main__":
         print(f"  Link: {v.get('link', '—')}")
         print()
 
-imena = ["km", "kw", "starost", "km_leto"]
-izris_pomembnosti(model, imena)
+    imena = ["km", "kw", "starost", "km_leto"]
+    izris_pomembnosti(model, imena)
