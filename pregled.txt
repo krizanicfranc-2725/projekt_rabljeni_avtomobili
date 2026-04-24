@@ -12,3 +12,4 @@ slika_goriv(datoteka, znamka = None):   vrne sliko z tortnim diagramom vrst gori
 
 slika_analiza_modela(datoteka, ime_znamke):  vrne sliko z grafom cene glede na kilometre za najpogostejši model določene znamke.
 
+slika_ugodnost_znamk(datoteka): vrne sliko z stolpčnim diagramom ugodnosti znamk

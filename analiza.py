@@ -54,29 +54,11 @@ def statistika(avti):
 
     return zaloga_po_znamkah, prodani_po_znamkah, goriva
 
-def link_znamke(znamka):
-    if znamka in id_znamk:
-        return f'https://trgovina.span.si/sl/Rabljena-vozila/?znamka={id_znamk[znamka]}'
-    return None
+#def link_znamke(znamka):
+#    if znamka in id_znamk:
+#        return f'https://trgovina.span.si/sl/Rabljena-vozila/?znamka={id_znamk[znamka]}'
+#    return None
 
-
-
-
-def xy(podatki, kljuc_x, kljuc_y):
-    '''Izlušči pare (x, y) iz podatkov glede na podana ključa.'''
-    x = []
-    y = []
-    
-    for v in podatki:
-        vr_x = v.get(kljuc_x)
-        vr_y = v.get(kljuc_y)
-
-        # Preverimo da sta oba podatka številki in večja od 0
-        if vr_x is not None and vr_y is not None:
-            x.append(vr_x)
-            y.append(vr_y)
-
-    return x, y
 
 def najpogostejsi_model_in_avti(avti, ime_znamke):
     '''Vrne seznam avtomobilov za najpogostejši model izbrane znamke.'''
@@ -266,6 +248,8 @@ def slika_ugodnost_znamk(datoteka):
 
 
 if __name__ == '__main__':
+
+
     ime_datoteke = "span_avti_23-04-2026.json"
     
     
