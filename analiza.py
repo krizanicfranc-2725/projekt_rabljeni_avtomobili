@@ -3,15 +3,6 @@ import matplotlib.pyplot as plt
 from collections import Counter
 from datetime import datetime
 
-id_znamk = {
-        'Audi': '3', 'Bentley': '103', 'BMW': '4', 'Citroën': '6', 'Citroen': '6', 
-        'Cupra': '128', 'Fiat': '9', 'Ford': '10', 'Jeep': '14', 'Kia': '15', 
-        'Land Rover': '18', 'Mercedes-Benz': '22', 'Mini': '23', 'Nissan': '25', 
-        'Opel': '26', 'Peugeot': '27', 'Porsche': '29', 'Renault': '31', 
-        'Seat': '34', 'Škoda': '37', 'Skoda': '37', 'Toyota': '38', 
-        'Volkswagen': '40', 'Volvo': '39'
-    }
-
 def pripravi_podatke(datoteka):
     '''Pripravi podatke iz JSON datoteke in jih prefiltrira.'''
     with open(datoteka, 'r', encoding='utf-8') as f:
@@ -122,10 +113,10 @@ def slika_zaloge_znamk(datoteka):
     imena = [x[0] for x in razvrsceno]
     kolicine = [x[1] for x in razvrsceno]
 
-    fig = plt.figure(figsize=[8, 6])
-    plt.bar(imena, kolicine, color='blue')
+    fig = plt.figure(figsize = [8, 6])
+    plt.bar(imena, kolicine, color = 'blue')
     plt.title('Število vozil na zalogi')
-    plt.xticks(rotation=90)
+    plt.xticks(rotation = 90)
 
     plt.tight_layout() 
     plt.show()
@@ -144,17 +135,17 @@ def slika_prodanih_znamk(datoteka):
     imena = [x[0] for x in razvrsceno]
     kolicine = [x[1] for x in razvrsceno]
 
-    fig = plt.figure(figsize=[8, 6])
-    plt.bar(imena, kolicine, color='green')
+    fig = plt.figure(figsize = [8, 6])
+    plt.bar(imena, kolicine, color = 'green')
     plt.title('Število prodanih vozil po znamkah')
-    plt.xticks(rotation=90)
+    plt.xticks(rotation = 90)
 
     plt.tight_layout()
     plt.show()
     plt.close()
 
 
-def slika_goriv(datoteka, znamka=None):
+def slika_goriv(datoteka, znamka = None):
     '''Nariše osnovni tortni diagram goriv in ga shrani.'''
     vsi_avti = pripravi_podatke(datoteka)
         
@@ -173,7 +164,7 @@ def slika_goriv(datoteka, znamka=None):
     vrednosti = list(goriva.values())
 
     fig = plt.figure(figsize=[8, 6])
-    plt.pie(vrednosti, labels=oznake, autopct='%1.1f%%')
+    plt.pie(vrednosti, labels=oznake, autopct = '%1.1f%%')
     plt.title(naslov)
     
     plt.tight_layout()
@@ -207,7 +198,7 @@ def slika_analiza_modela(datoteka, ime_znamke):
     # Razpakiramo vse tri komponente
     km, cene, letniki = zip(*podatki)
 
-    fig = plt.figure(figsize=[6.4, 4.8])
+    fig = plt.figure(figsize=[8, 6])
     
     # Dodane barve glede na letnik
     scatter = plt.scatter(km, cene, c = letniki, cmap='viridis')
@@ -231,12 +222,12 @@ def slika_ugodnost_znamk(datoteka):
     if not povprecja:
         return 'Ni podatkov za analizo ugodnosti znamk.'
 
-    razvrsceno = sorted(povprecja.items(), key=lambda x: x[1], reverse=True)
+    razvrsceno = sorted(povprecja.items(), key = lambda x: x[1], reverse=True)
     imena = [x[0] for x in razvrsceno]
     vrednosti = [x[1] for x in razvrsceno]
 
     fig = plt.figure(figsize=[8, 6])
-    plt.bar(imena, vrednosti, color='purple')
+    plt.bar(imena, vrednosti, color = 'purple')
     
     plt.title('Povprečna cena na kilometer po znamkah')
     plt.ylabel('Indeks (€ / km)')
