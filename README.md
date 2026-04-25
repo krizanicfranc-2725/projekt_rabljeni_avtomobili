@@ -17,9 +17,9 @@ Projekt vključuje:
 
 ### Navodila za uporabo:
 1. Zaženi datoteko uporabniski_vmesnik.py.
-    V terminalu se prikaže glavni meni.
+    - V terminalu se prikaže glavni meni.
 2. Izberi možnost (1–7) glede na to, kaj želite analizirati.
-    Pri grafih se okno z grafom odpre samodejno.
+    - Pri grafih se okno z grafom odpre samodejno.
 
 ### Zahteve:
 Zagon projekta terja naslednje Python knjižnice:
