@@ -55,9 +55,8 @@ def pripravi_matrike(avti):
     return X, y
 
 
-# 3) Učenje modela
+# Učenje modela
 def treniraj_model(X, y):
-    """Treniranje RF modela in izpis osnovne metrike."""
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.1, random_state=42
     )
@@ -77,7 +76,7 @@ def treniraj_model(X, y):
     return model
 
 
-# 4) Iskanje podcenjenih avtov
+# Iskanje podcenjenih avtov
 def najdi_podcenjene(avti, model, n=3):
     """Doda napovedi in vrne najbolj podcenjene avte."""
     X, _ = pripravi_matrike(avti)
@@ -92,7 +91,7 @@ def najdi_podcenjene(avti, model, n=3):
 
 
 
-# 5) Glavni del
+# test
 if __name__ == "__main__":
     datoteka = "data\\arhiv\\span_avti_22-04-2026.json"
 
@@ -102,13 +101,10 @@ if __name__ == "__main__":
 
     top_min = najdi_podcenjene(avti, model)
 
-    print("\nNajbolj podcenjeni avti:")
     for v in top_min:
         print(f"{v['naziv']}")
-        print(f"  Cena: {v['cena']}")
-        print(f"  Napoved: {v['napoved']:.0f}")
-        print(f"  Razlika: {v['razlika']:.0f}")
-        print(f"  Link: {v.get('link', '—')}")
+        print(f"Cena: {v['cena']}")
+        print(f"Napoved: {v['napoved']:.0f}")
+        print(f"Razlika: {v['razlika']:.0f}")
+        print(f"Link: {v.get('link', '—')}")
         print()
-
-    imena = ["km", "kw", "starost", "km_leto"]

@@ -236,6 +236,7 @@ def slika_ugodnost_znamk(datoteka):
     plt.close()
 
 
+# test
 if __name__ == '__main__':
 
 
@@ -247,24 +248,24 @@ if __name__ == '__main__':
         print(msg)
 
     
-    #slika_zaloge_znamk(ime_datoteke)
+    slika_zaloge_znamk(ime_datoteke)
     
     
     
-    # slika_prodanih_znamk(ime_datoteke)
-    
-
-    # slika_goriv(ime_datoteke, znamka = 'audi')
-
-    # vsi_avti = pripravi_podatke(ime_datoteke)
-    
-    
+    slika_prodanih_znamk(ime_datoteke)
     
 
-    # povprecja = analiza_znamk(vsi_avti)
-    # for znamka, povprecje in povprecja.items():
-    #     print(f"{znamka}: {povprecje:.2f} €/km")
+    slika_goriv(ime_datoteke, znamka = 'audi')
 
-    # slika_ugodnost_znamk(ime_datoteke)
+    vsi_avti = preberi_podatke(ime_datoteke)
     
-    # slika_goriv(ime_datoteke)
+    
+    
+
+    povprecja = analiza_znamk(vsi_avti)
+    for znamka, povprecje in povprecja.items():
+        print(f"{znamka}: {povprecje:.2f} €/km")
+
+    slika_ugodnost_znamk(ime_datoteke)
+    
+    slika_goriv(ime_datoteke)

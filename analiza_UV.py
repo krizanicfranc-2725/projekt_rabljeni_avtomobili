@@ -12,15 +12,13 @@ def analiza_UV(pot):
     znamke = sorted(set(v["znamka"] for v in avti))
 
     while True:
-        print("\n=========================================")
-        print("  ANALIZA TRGA – Izberi graf")
-        print("=========================================")
+        print("\n---ANALIZA TRGA – Izberi graf")
         print("1) Zaloga po znamkah")
         print("2) Prodani po znamkah")
-        print("3) Goriva")
+        print("3) Graf goriv")
         print("4) Ugodnost znamk")
-        print("5) Analiza modelov za izbrano znamko")
-        print("6) Nazaj v glavni meni")
+        print("5) Analiza najpogostejših modelov za izbrano znamko")
+        print("6) Nazaj")
 
         izbira = input("\nIzberi možnost: ").strip()
 
@@ -52,14 +50,11 @@ def analiza_UV(pot):
                     print(f"Znamka '{z}' ni v podatkih. Poskusi znova.")
                     continue
 
-                # Pokličemo funkcijo in ujamemo morebitno sporočilo
                 msg = slika_analiza_modela(pot, z)
 
-                # Če funkcija vrne sporočilo, ga izpišemo
+                # Če funkcija vrne sporočilo
                 if msg:
                     print(msg)
-
-
 
         elif izbira == "6":
             return
