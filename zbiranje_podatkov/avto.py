@@ -3,7 +3,7 @@ class Avto:
 
         self.id = id
         self.naziv = naziv
-        self.znamka = znamka
+        self.znamka = znamka.lower() if znamka else None
         self.gorivo = gorivo
         self.letnik = letnik
         self.km = km

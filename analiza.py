@@ -1,15 +1,11 @@
-import json
 import matplotlib.pyplot as plt
 from collections import Counter
-from datetime import datetime
+from napovedni_model import preberi_podatke
 
-def pripravi_podatke(datoteka):
-    '''Pripravi podatke iz JSON datoteke in jih prefiltrira.'''
-    with open(datoteka, 'r', encoding='utf-8') as f:
-        data = json.load(f)
-
-    return data
-
+id_znamk = {'audi':'3','bentley':'103','bmw':'4','citroen':'6','cupra':'128','fiat':'9','ford':'10',
+            'jeep':'14','kia':'15','land rover':'18','mercedes-benz':'22','mini':'23','nissan':'25',
+            'opel':'26','peugeot':'27','porsche':'29','renault':'31','seat':'34','skoda':'37','toyota':'38',
+            'volkswagen':'40','volvo':'39'}
 
    
 def analiza_znamk(avti):
@@ -45,10 +41,10 @@ def statistika(avti):
 
     return zaloga_po_znamkah, prodani_po_znamkah, goriva
 
-#def link_znamke(znamka):
-#    if znamka in id_znamk:
-#        return f'https://trgovina.span.si/sl/Rabljena-vozila/?znamka={id_znamk[znamka]}'
-#    return None
+def link_znamke(znamka):
+    if znamka in id_znamk:
+        return f'https://trgovina.span.si/sl/Rabljena-vozila/?znamka={id_znamk[znamka]}'
+    return None
 
 
 def najpogostejsi_model_in_avti(avti, ime_znamke):
@@ -56,39 +52,41 @@ def najpogostejsi_model_in_avti(avti, ime_znamke):
 
     modeli = []
     pari = []
-    
-    ime_znamke_lower = ime_znamke.lower()
 
-    # Gremo čez vse avtomobile in iščemo tiste, ki ustrezajo izbrani znamki
+    ime_znamke = ime_znamke.lower()
+
     for avto in avti:
-        # Preverimo znamko in naziv avtomobila. če ni znamke ali naziva, vzamemo prazno vrednost.
         znamka = avto.get('znamka', '').lower()
         naziv = avto.get('naziv', '')
-        if znamka != ime_znamke_lower or not naziv:
+
+        # filtriranje po znamki
+        if znamka != ime_znamke or not naziv:
             continue
 
         naziv_lower = naziv.lower()
-        # Če naziv začne z imenom znamke, odstranimo ta del, sicer vzamemo cel naziv
-        if naziv_lower.startswith(ime_znamke_lower):
-            ostanek = naziv[len(ime_znamke):].strip()
+
+        # odstrani ime znamke iz naziva
+        if naziv_lower.startswith(ime_znamke):
+            ostanek = naziv_lower[len(ime_znamke):].strip()
         else:
-            ostanek = naziv.strip()
+            ostanek = naziv_lower.strip()
 
         deli = ostanek.split()
         if not deli:
             continue
-        
-        model = deli[0].lower()   
+
+        model = deli[0]
 
         modeli.append(model)
         pari.append((model, avto))
 
     if not modeli:
         return []
-    # Poiščemo najpogostejši model
-    naj_model = Counter(modeli).most_common(1)[0][0]
 
-    return [avto for m, avto in pari if m == naj_model]
+    najpogostejsi = Counter(modeli).most_common(1)[0][0]
+
+    return [avto for m, avto in pari if m == najpogostejsi]
+
 
 def izlusci_znamko(vsi_avti, ime_znamke):
     '''Iz seznama vseh vozil vrne samo vozila določene znamke.'''
@@ -103,7 +101,7 @@ def izlusci_znamko(vsi_avti, ime_znamke):
 
 def slika_zaloge_znamk(datoteka):
     '''Ustvari in shrani poenostavljen graf zaloge.'''
-    podatki = pripravi_podatke(datoteka)
+    podatki = preberi_podatke(datoteka, na_voljo=False)    
     zaloga, _, _ = statistika(podatki)
 
     if not zaloga:
@@ -125,7 +123,7 @@ def slika_zaloge_znamk(datoteka):
 
 def slika_prodanih_znamk(datoteka):
     '''Ustvari in shrani poenostavljen graf prodaje.'''
-    podatki = pripravi_podatke(datoteka)
+    podatki = preberi_podatke(datoteka, na_voljo=False)
     _, prodani, _ = statistika(podatki)
 
     if not prodani:
@@ -147,7 +145,7 @@ def slika_prodanih_znamk(datoteka):
 
 def slika_goriv(datoteka, znamka = None):
     '''Nariše osnovni tortni diagram goriv in ga shrani.'''
-    vsi_avti = pripravi_podatke(datoteka)
+    vsi_avti = preberi_podatke(datoteka, na_voljo=False)
         
     if znamka:
         avti = izlusci_znamko(vsi_avti, znamka)
@@ -174,7 +172,7 @@ def slika_goriv(datoteka, znamka = None):
 
 def slika_analiza_modela(datoteka, ime_znamke):
     '''Nariše graf razpršenosti cene in km (z letniki).'''
-    vsi_avti = pripravi_podatke(datoteka)
+    vsi_avti = preberi_podatke(datoteka, na_voljo=False)
     vozila = najpogostejsi_model_in_avti(vsi_avti, ime_znamke)
     
     if not vozila:
@@ -215,7 +213,7 @@ def slika_analiza_modela(datoteka, ime_znamke):
 
 def slika_ugodnost_znamk(datoteka):
     '''Nariše stolpčni diagram ugodnosti znamk (indeks cena/km) od najdražje do najcenejše.'''
-    vsi_avti = pripravi_podatke(datoteka)
+    vsi_avti = preberi_podatke(datoteka, na_voljo=False)
     
     povprecja = analiza_znamk(vsi_avti)
     
@@ -241,29 +239,32 @@ def slika_ugodnost_znamk(datoteka):
 if __name__ == '__main__':
 
 
-    ime_datoteke = "span_avti_22-04-2026.json"
+    ime_datoteke = "data\\arhiv\\span_avti_22-04-2026.json"
+    
+    
+    msg = slika_analiza_modela(ime_datoteke, 'mercedes-benz')
+    if msg:
+        print(msg)
+
+    
+    #slika_zaloge_znamk(ime_datoteke)
     
     
     
-    
-    slika_zaloge_znamk(ime_datoteke)
-    
-    
-    
-    slika_prodanih_znamk(ime_datoteke)
+    # slika_prodanih_znamk(ime_datoteke)
     
 
-    slika_goriv(ime_datoteke, znamka = 'land rover')
+    # slika_goriv(ime_datoteke, znamka = 'audi')
 
-    vsi_avti = pripravi_podatke(ime_datoteke)
+    # vsi_avti = pripravi_podatke(ime_datoteke)
     
     
-    slika_analiza_modela(ime_datoteke, 'volkswagen')
-
-    povprecja = analiza_znamk(vsi_avti)
-    for znamka, povprecje in povprecja.items():
-        print(f"{znamka}: {povprecje:.2f} €/km")
-
-    slika_ugodnost_znamk(ime_datoteke)
     
-    slika_goriv(ime_datoteke)
+
+    # povprecja = analiza_znamk(vsi_avti)
+    # for znamka, povprecje in povprecja.items():
+    #     print(f"{znamka}: {povprecje:.2f} €/km")
+
+    # slika_ugodnost_znamk(ime_datoteke)
+    
+    # slika_goriv(ime_datoteke)

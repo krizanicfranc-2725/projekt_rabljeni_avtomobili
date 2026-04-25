@@ -2,7 +2,6 @@ import re
 import time
 import json
 import requests
-from datetime import datetime
 from zbiranje_podatkov.iskalec import najdi_avto
 
 
@@ -17,6 +16,11 @@ def prenesi_stran(n):
 def split_na_avte(html):
     # razdeli html tekst na bloke, ki ustrezajo posameznim avtomobilom
     return re.split(r'<div class="item-box[^"]*">', html)[1:]
+
+def format_cas(sekunde):
+    minute = int(sekunde // 60)
+    sek = int(sekunde % 60)
+    return f"{minute} min {sek} s"
 
 def poberi_vse_strani():
     #poberi podatke o vseh avtomobilih z vseh strani trgovine span
@@ -44,16 +48,22 @@ def poberi_vse_strani():
                 # izloči najemne avte
                 if avto.cena is not None and avto.cena < 1000:
                     continue
-                if avto.znamka == "citro":
+                if avto.znamka and avto.znamka.lower().startswith("citro"):
                     avto.znamka = "citroen"
+                if avto.znamka and avto.znamka.lower().startswith("mercedes"):
+                    avto.znamka = "mercedes"
+                if avto.znamka and avto.znamka.startswith("land"):
+                    avto.znamka = "land rover"
 
                 vsi_avti.append(avto)
 
 
-    print(f"\nSkupni čas: {time.time() - zacetek:.3f} s")
+    skupni = time.time() - zacetek
+    print(f"\nSkupni čas pobiranja: {format_cas(skupni)}")
     print(f"Skupno najdenih avtov: {len(vsi_avti)}")
 
     return vsi_avti
+
 def shrani_json(avti, pot):
     with open(pot, "w", encoding="utf-8") as f:
         json.dump([a.to_dict() for a in avti], f, ensure_ascii=False, indent=4)

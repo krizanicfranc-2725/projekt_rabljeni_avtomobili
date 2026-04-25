@@ -7,8 +7,7 @@ from napovedni_model import (
     preberi_podatke,
     pripravi_matrike,
     treniraj_model,
-    najdi_podcenjene,
-    izris_pomembnosti
+    najdi_podcenjene
 )
 from analiza import (
     slika_zaloge_znamk,
@@ -17,6 +16,7 @@ from analiza import (
     slika_analiza_modela,
     slika_ugodnost_znamk
 )
+from analiza_UV import analiza_UV
 
 # --- Poti ---
 MAPA_ARHIV = os.path.join("data", "arhiv")
@@ -42,7 +42,7 @@ def pridobi_danes():
         print(f"Današnji podatki že obstajajo: {pot}")
         return pot
 
-    print("Pridobivam današnje podatke (5 min)...")
+    print("Pridobivam današnje podatke (približno 5 min)...")
     avti = poberi_vse_strani()
 
     ime = ime_danes()
@@ -79,25 +79,50 @@ def izberi_arhiv():
 # ---------------------------------------------------------
 
 def najugodnejši_avto(pot):
-    avti = preberi_podatke(pot)
+    # 1) Preberi vse avte, ki imajo ceno (za model)
+    avti = preberi_podatke(pot, na_voljo=True)
 
-    # -----------------------------
-    # 1) Filtri
-    # -----------------------------
-    print("\nFiltri (pusti prazno za brez filtra):")
+    # 2) Trenira se vedno na CELI učni množici
+    X, y = pripravi_matrike(avti)
+    model = treniraj_model(X, y)
 
-    filter_znamka = input("Znamka (npr. audi): ").strip().lower()
+    # 3) Napovej cene za VSE avte
+    top_vsi = najdi_podcenjene(avti, model, n=len(avti))
+
+    # 4) Izpis znamk
+    znamke = sorted(set(v["znamka"] for v in avti))
+    print("\nZnamke na voljo:")
+    print(", ".join(znamke))
+
+    # 5) Filtri
+    znamke = sorted(set(v["znamka"] for v in avti))
+    print("\nZnamke na voljo:")
+    print(", ".join(znamke))
+
+    while True:
+        filter_znamka = input("\nZnamka (pusti prazno za brez filtra): ").strip().lower()
+
+        if filter_znamka == "":
+            break
+
+        if filter_znamka in znamke:
+            break
+
+        # neveljavna znamka
+        print(f"Znamka '{filter_znamka}' ni med razpoložljivimi.")
+        print("Poskusi eno izmed:")
+        print(", ".join(znamke))
+
     filter_min_cena = input("Minimalna cena: ").strip()
     filter_max_cena = input("Maksimalna cena: ").strip()
 
-    # Pretvorba cen
     min_cena = int(filter_min_cena) if filter_min_cena else None
     max_cena = int(filter_max_cena) if filter_max_cena else None
 
-    # Uporaba filtrov
+    # 6) Filtriranje že napovedanih avtov
     filtrirani = []
-    for v in avti:
-        if filter_znamka and v["znamka"].lower() != filter_znamka:
+    for v in top_vsi:
+        if filter_znamka and v["znamka"] != filter_znamka:
             continue
         if min_cena is not None and v["cena"] < min_cena:
             continue
@@ -109,35 +134,21 @@ def najugodnejši_avto(pot):
         print("\nNi vozil, ki ustrezajo filtrom.")
         return
 
-    # -----------------------------
-    # 2) Koliko rezultatov želi uporabnik
-    # -----------------------------
+    # 7) Koliko rezultatov želi uporabnik
     try:
         n = int(input("\nKoliko najugodnejših avtov želiš prikazati? "))
     except:
         n = 3
 
-    # -----------------------------
-    # 3) Model
-    # -----------------------------
-    X, y = pripravi_matrike(filtrirani)
-    model = treniraj_model(X, y)
-
-    top = najdi_podcenjene(filtrirani, model, n=n)
-
-    # -----------------------------
-    # 4) Izpis rezultatov
-    # -----------------------------
+    # 8) Izpis top N
     print("\nNajbolj podcenjeni avti:\n")
-    for v in top:
+    for v in filtrirani[:n]:
         print(f"{v['naziv']}")
         print(f"  Cena: {v['cena']}")
         print(f"  Napoved: {v['napoved']:.0f}")
         print(f"  Razlika: {v['razlika']:.0f}")
         print(f"  Link: {v.get('link', '—')}\n")
 
-    #print("Odpiram graf pomembnosti...")
-    #izris_pomembnosti(model, ["km", "kw", "starost", "km_leto"])
 
 
 # ---------------------------------------------------------
@@ -163,23 +174,27 @@ def napovej_ceno(pot):
     print(f"\nNapovedana cena: {napoved:.0f} €")
 
 
-# ---------------------------------------------------------
-# 4) Analiza trga
-# ---------------------------------------------------------
+def povzetek_podatkov(pot):
+    avti = preberi_podatke(pot, False)
 
-def analiza_trga(pot):
-    print("\nOdpiram analitične grafe...")
+    # Avti na voljo (tisti, ki imajo ceno)
+    na_voljo = [a for a in avti if a["cena"] is not None]
 
-    slika_zaloge_znamk(pot)
-    slika_prodanih_znamk(pot)
-    slika_goriv(pot)
-    slika_ugodnost_znamk(pot)
+    # Prodani avti
+    prodani = [a for a in avti if a["prodano"]]
 
-    znamka = input("\nVnesi znamko za analizo modelov (npr. volkswagen): ").strip()
-    if znamka:
-        slika_analiza_modela(pot, znamka)
+    # Znamke
+    znamke = sorted(set(a["znamka"] for a in avti))
 
-
+    print("\n=========================================")
+    print("  POVZETEK PODATKOV")
+    print("=========================================")
+    print(f"Skupno število avtov: {len(avti)}")
+    print(f"Na voljo za nakup:    {len(na_voljo)}")
+    print(f"Prodani:              {len(prodani)}")
+    print("\nZnamke v podatkih:")
+    print(", ".join(znamke))
+    print("=========================================\n")
 # ---------------------------------------------------------
 # 5) Glavni meni
 # ---------------------------------------------------------
@@ -205,6 +220,10 @@ def main():
         print("Neveljavna izbira.")
         return
 
+    # --- IZPIS POVZETKA ---
+    povzetek_podatkov(pot)
+
+
     # --- Glavni meni po izbiri podatkov ---
     while True:
         print("\n=========================================")
@@ -224,7 +243,7 @@ def main():
             napovej_ceno(pot)
 
         elif izbira == "3":
-            analiza_trga(pot)
+            analiza_UV(pot)
 
         elif izbira == "4":
             print("Izhod.")
@@ -232,7 +251,6 @@ def main():
 
         else:
             print("Neveljavna izbira.")
-
 
 if __name__ == "__main__":
     main()

@@ -2,18 +2,17 @@ import json
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_percentage_error
-import matplotlib.pyplot as plt
 
 
 #Branje in filtriranje
-def preberi_podatke(pot):
-    """Prebere JSON datoteko in pripravi podatke za RF."""
+def preberi_podatke(pot, na_voljo=True):
+    """Prebere JSON datoteko in pripravi podatke za RF. Če na_voljo=True, izloči avte brez cene (prodane)."""
     with open(pot, "r", encoding="utf-8") as f:
         podatki = json.load(f)
 
     rezultat = []
     for v in podatki:
-        if v.get("cena") is None:
+        if na_voljo and v.get("cena") is None:
             continue
         if v.get("km") is None:
             continue
@@ -91,21 +90,11 @@ def najdi_podcenjene(avti, model, n=3):
     avti_sorted = sorted(avti, key=lambda v: v["razlika"], reverse=True)
     return avti_sorted[:n]
 
-def izris_pomembnosti(model, imena_featureov):
-    """Prikaže graf pomembnosti posameznih vhodnih spremenljivk."""
-    pomembnosti = model.feature_importances_
-
-    plt.figure(figsize=(8, 5))
-    plt.barh(imena_featureov, pomembnosti)
-    plt.xlabel("Pomembnost")
-    plt.title("Feature importance (Random Forest)")
-    plt.tight_layout()
-    plt.show()
 
 
 # 5) Glavni del
 if __name__ == "__main__":
-    datoteka = "span_avti_22-04-2026.json"
+    datoteka = "data\\arhiv\\span_avti_22-04-2026.json"
 
     avti = preberi_podatke(datoteka)
     X, y = pripravi_matrike(avti)
@@ -123,4 +112,3 @@ if __name__ == "__main__":
         print()
 
     imena = ["km", "kw", "starost", "km_leto"]
-    izris_pomembnosti(model, imena)

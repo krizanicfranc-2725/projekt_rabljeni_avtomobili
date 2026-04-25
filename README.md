@@ -1,32 +1,32 @@
-# projekt_rabljeni_avtomobili
-Analiza trga rabljenih avtomobilov trgovine Špan
+## Projekt za predmet Programiranje 2: Analiza rabljenih avtomobilov (Špan)
 
+Projekt vključuje:
+* spletno strganje s strani: https://trgovina.span.si/sl/Rabljena-vozila/,
+* statistično obdelavo podatkov,
+* preprost model s strojnim učenjem
+* in vizualizacijo.
 
-naslednji cilji:
-part 2: tekstovni vmesnik
--najugodnejši avto glede na:
-                        -na ceno (absolutno najcenejši)
-                        -na kilometre (min cena/km)
-                        -na letnik ( cena/(2026 - letnik) )
-                        -na prostornino (cena/prostornina)
-                        -na moč kW (moč/cena)
-                        -na moč konjske moči [km] (moč/cena)
+# Funkcionalnosti
 
--najugodnješi avto posamezne znamke
--najugodnejša znamka
+Program omogoča:
 
+- zbiranje podatkov o rabljenih vozilih s spletne strani trgovine Špan,
+- obdelavo in čiščenje podatkov (cena, kilometri, letnik, gorivo, znamka),
+- iskanje najugodnejših vozil glede na različne kriterije,
+- analizo trga (zaloga, prodani, goriva, ugodnost znamk),
+- analizo modelov posamezne znamke,
+- prikaz rezultatov v obliki grafov,
+- preprost tekstovni uporabniški vmesnik za interaktivno uporabo.
 
+# Navodila za uporabo:
+1. Zaženi datoteko uporabniski_vmesnik.py.
+    V terminalu se prikaže glavni meni.
+2. Izberi možnost (1–7) glede na to, kaj želite analizirati.
+    Pri grafih se okno z grafom odpre samodejno.
 
+# Zahteve
 
-part 3: grafični prikaz
--vsi/znamka
--prodani/znamka
--prodajani/znamka
--povprečna cena/ znamka
--najugnejši/znamka
-
-
-finale: youtube video
-
-
-
+Zagon projekta terja naslednje Python knjižnice:
+- matplotlib
+- scikit-learn
+- requests
