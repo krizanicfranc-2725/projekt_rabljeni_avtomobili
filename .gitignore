@@ -11,3 +11,5 @@ data/arhiv/*
 # Logs / temp
 *.log
 *.tmp
+
+razvijalske_datoteke/
