@@ -1,13 +1,13 @@
-# Python cache
 __pycache__/
 *.pyc
+*.pyo
 
-*.json
+.vscode/
+
+# Ignore all JSON except arhiv
+data/arhiv/*
+!data/arhiv/*.json
 
 # Logs / temp
 *.log
 *.tmp
-
-*.vscode
-
-
