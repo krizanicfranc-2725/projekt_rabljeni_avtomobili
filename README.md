@@ -26,3 +26,5 @@ Zagon projekta terja naslednje Python knjižnice:
 - matplotlib
 - scikit-learn
 - requests
+
+Avtorja: Gaj Švagelj in Franc Križanič

@@ -243,29 +243,29 @@ if __name__ == '__main__':
     ime_datoteke = "data\\arhiv\\span_avti_22-04-2026.json"
     
     
-    msg = slika_analiza_modela(ime_datoteke, 'mercedes-benz')
+    msg = slika_analiza_modela(ime_datoteke, 'bmw')
     if msg:
         print(msg)
 
     
-    slika_zaloge_znamk(ime_datoteke)
+    # slika_zaloge_znamk(ime_datoteke)
     
     
     
-    slika_prodanih_znamk(ime_datoteke)
-    
-
-    slika_goriv(ime_datoteke, znamka = 'audi')
-
-    vsi_avti = preberi_podatke(ime_datoteke)
-    
-    
+    # slika_prodanih_znamk(ime_datoteke)
     
 
-    povprecja = analiza_znamk(vsi_avti)
-    for znamka, povprecje in povprecja.items():
-        print(f"{znamka}: {povprecje:.2f} €/km")
+    # slika_goriv(ime_datoteke, znamka = 'audi')
 
-    slika_ugodnost_znamk(ime_datoteke)
+    # vsi_avti = preberi_podatke(ime_datoteke)
     
-    slika_goriv(ime_datoteke)
+    
+    
+
+    # povprecja = analiza_znamk(vsi_avti)
+    # for znamka, povprecje in povprecja.items():
+    #     print(f"{znamka}: {povprecje:.2f} €/km")
+
+    # slika_ugodnost_znamk(ime_datoteke)
+    
+    # slika_goriv(ime_datoteke)

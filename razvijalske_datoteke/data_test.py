@@ -1,13 +1,20 @@
 import json
 
-with open("data\\arhiv\\span_avti_22-04-2026.json", encoding="utf-8") as f:
+with open("data\\arhiv\\span_avti_25-04-2026.json", encoding="utf-8") as f:
     avti = json.load(f)
 
 znamke = [a["znamka"] for a in avti]
-print(set(znamke))
+# print(set(znamke))
 
-aktivni = [a for a in avti if not a["prodano"]]
-print(f"Število aktivnih avtov: {len(aktivni)}")
+# aktivni = [a for a in avti if not a["prodano"]]
+# print(f"Število aktivnih avtov: {len(aktivni)}")
 
 #majhni = [a for a in avti if a["cena"] and a["cena"] < 10000]
 #print(f"Število avtov, ki stanejo manj kot 10.000 €: {len(majhni)}")
+
+def format_cas(sekunde):
+    minute = int(sekunde // 60)
+    sek = int(sekunde % 60)
+    return f"{minute} min {sek} s"
+
+print(f"Čas nalaganja podatkov: {format_cas(152)}")
